@@ -132,6 +132,60 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        //public Post GetPostById(int id)
+        //{
+        //    using (SqlConnection conn = Connection)
+        //    {
+        //        conn.Open();
+        //        using (SqlCommand cmd = conn.CreateCommand())
+        //        {
+
+        //            cmd.CommandText = @"
+        //                            Select p.Id as postId, Title, Content, c.Name as categoryName,
+        //                            CreateDateTime, PublishDateTime, ImageLocation,
+        //                            c.Id as categoryId, uP.Id as userProfileId, uP.DisplayName as userProfileDisplayName
+        //                            From Post p
+        //                            Left Join Category c on c.id = p.CategoryId
+        //                            Left Join UserProfile uP on uP.id = p.UserProfileId
+        //                            Where p.Id = @id
+        //                           ";
+
+        //            cmd.Parameters.AddWithValue("@id", id);
+
+        //            using (SqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                if (reader.Read())
+        //                {
+        //                    Post newPost = new Post
+        //                    {
+        //                        Id = reader.GetInt32(reader.GetOrdinal("postId")),
+        //                        Title = reader.GetString(reader.GetOrdinal("Title")),
+        //                        Content = reader.GetString(reader.GetOrdinal("Content")),
+        //                        CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+        //                        PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+        //                        ImageLocation = reader.IsDBNull(reader.GetOrdinal("ImageLocation")) ? null : reader.GetString
+        //                        (reader.GetOrdinal("ImageLocation")),
+        //                        CategoryId = reader.GetInt32(reader.GetOrdinal("categoryId")),
+        //                        UserProfileId = reader.GetInt32(reader.GetOrdinal("userProfileId")),
+        //                        Category = new Category
+        //                        {
+        //                            Name = reader.GetString(reader.GetOrdinal("categoryName"))
+        //                        },
+        //                        UserProfile = new UserProfile
+        //                        {
+        //                            DisplayName = reader.GetString(reader.GetOrdinal("userProfileDisplayName"))
+        //                        }
+        //                    };
+        //                    return newPost;
+        //                }
+        //                else
+        //                {
+        //                    return null;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public void Add(Post post)
         {
@@ -158,6 +212,25 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
 
                     post.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public void DeletePost(int postId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        DELETE FROM Post
+                                        WHERE Id = @id
+                                       ";
+                    cmd.Parameters.AddWithValue("@id", postId);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
