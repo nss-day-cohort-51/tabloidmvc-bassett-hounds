@@ -70,6 +70,28 @@ namespace TabloidMVC.Controllers
             }
         }
 
+        public IActionResult Edit(int id)
+        {
+            Post post = _postRepository.GetPublishedPostById(id);
+
+            return View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Post post)
+        {
+            try
+            {
+                _postRepository.UpdatePost(post);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(Exception ex)
+            {
+                return View(post);
+            }
+        }
+
 
         public IActionResult Delete(int id)
         {
