@@ -79,13 +79,13 @@ namespace TabloidMVC.Controllers
         public ActionResult Delete(int id)
         {
             Category category = _categoryRepository.GetCategoryById(id);
-            return View();
+            return View(category);
         }
 
         // POST: CategoryController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Category category)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace TabloidMVC.Controllers
             }
             catch
             {
-                return View();
+                return View(category);
             }
         }
     }
