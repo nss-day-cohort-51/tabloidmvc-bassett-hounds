@@ -78,6 +78,7 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Delete/5
         public ActionResult Delete(int id)
         {
+            Category category = _categoryRepository.GetCategoryById(id);
             return View();
         }
 
@@ -88,7 +89,8 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _categoryRepository.DeleteCategory(id);
+                return RedirectToAction("Index");
             }
             catch
             {
