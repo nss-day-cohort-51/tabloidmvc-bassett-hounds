@@ -49,6 +49,7 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
         public void AddComment(Comment comment)
         {
             using (var conn = Connection)
@@ -62,23 +63,28 @@ namespace TabloidMVC.Repositories
                                   )
                         OUTPUT INSERTED.ID
                         VALUES (
-                            @PostId, @UserProfile, @Subject,@Content, @CreateDateTime )";
+                            @PostId, @UserProfileId, @Subject,@Content, @CreateDateTime )";
 
                     cmd.Parameters.AddWithValue("@PostId", comment.PostId);
                     cmd.Parameters.AddWithValue("@UserProfileId", comment.UserProfileId);
                     cmd.Parameters.AddWithValue("@Subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@Content", comment.Content);
                     cmd.Parameters.AddWithValue("@CreateDateTime", comment.CreateDateTime);
 
                     comment.Id = (int)cmd.ExecuteScalar();
 
-                    public Comment GetCommentById(int id)
+                }
+
+            }
+        }
+            public Comment GetCommentById(int id)
+            {
+                using (SqlConnection conn = Connection)
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        using (SqlConnection conn = Connection)
-                        {
-                            conn.Open();
-                            using (SqlCommand cmd = conn.CreateCommand())
-                            {
-                                cmd.CommandText = @"
+                        cmd.CommandText = @"
                                         Select Comment.Id, Comment.PostId,
                                         Comment.UserProfileId, Comment.Subject,
                                         Comment.Content, Comment.CreateDateTime
@@ -86,51 +92,51 @@ namespace TabloidMVC.Repositories
                                         Where Comment.id = @id
                                         ";
 
-                                cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@id", id);
 
-                                using (SqlDataReader reader = cmd.ExecuteReader())
-                                {
-                                    if (reader.Read())
-                                    {
-                                        Comment comment = new Comment
-                                        {
-                                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                            UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
-                                            PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
-                                            Subject = reader.GetString(reader.GetOrdinal("Subject")),
-                                            Content = reader.GetString(reader.GetOrdinal("Content")),
-                                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime"))
-                                        };
-
-                                        return comment;
-                                    }
-                                    else
-                                    {
-                                        return null;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    public void DeleteComment(int commentId)
-                    {
-                        using (SqlConnection conn = Connection)
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            conn.Open();
-
-                            using (SqlCommand cmd = conn.CreateCommand())
+                            if (reader.Read())
                             {
-                                cmd.CommandText = @"
-                                        Delete From Comment
-                                        Where Id = @id
-                                        ";
+                                Comment comment = new Comment
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                                    PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                                    Subject = reader.GetString(reader.GetOrdinal("Subject")),
+                                    Content = reader.GetString(reader.GetOrdinal("Content")),
+                                    CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime"))
+                                };
 
-                                cmd.Parameters.AddWithValue("@id", commentId);
-
-                                cmd.ExecuteNonQuery();
+                                return comment;
+                            }
+                            else
+                            {
+                                return null;
                             }
                         }
                     }
                 }
             }
+
+            public void DeleteComment(int commentId)
+            {
+                using (SqlConnection conn = Connection)
+                {
+                    conn.Open();
+
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"
+                                        Delete From Comment
+                                        Where Id = @id
+                                        ";
+
+                        cmd.Parameters.AddWithValue("@id", commentId);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+    }

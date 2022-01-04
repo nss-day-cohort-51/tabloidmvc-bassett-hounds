@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
+using System.Security.Claims;
 
 namespace TabloidMVC.Controllers
 {
@@ -32,7 +33,7 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: CommentController/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
             return View();
         }
@@ -40,12 +41,14 @@ namespace TabloidMVC.Controllers
         // POST: CommentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Comment comment)
+        public ActionResult Create(int id, Comment comment)
         {
             try
             {
+                comment.PostId = id;
+                comment.UserProfileId = GetCurrentUserProfileId();
                 _commentRepository.AddComment(comment);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id = comment.PostId});
             }
             catch (Exception ex)
             {
@@ -97,6 +100,11 @@ namespace TabloidMVC.Controllers
             {
                 return View(comment);
             }
+        }
+        private int GetCurrentUserProfileId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }
