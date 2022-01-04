@@ -77,7 +77,7 @@ namespace TabloidMVC.Controllers
         public ActionResult Delete(int id)
         {
             Comment comment = _commentRepository.GetCommentById(id);
-            return View();
+            return View(comment);
         }
 
         // POST: CommentController/Delete/5
@@ -87,9 +87,10 @@ namespace TabloidMVC.Controllers
         {
             try
             {
+                Comment commentToDelete = _commentRepository.GetCommentById(id);
                 _commentRepository.DeleteComment(id);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id =commentToDelete.PostId});
             }
             catch (Exception ex)
             {
