@@ -13,13 +13,15 @@ namespace TabloidMVC.Controllers
     [Authorize]
     public class PostController : Controller
     {
+        private readonly ICommentRepository _commentRepository;
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ICommentRepository commentRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _commentRepository = commentRepository;
         }
 
         public IActionResult Index()
@@ -30,6 +32,7 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Details(int id)
         {
+            var comments = _commentRepository.GetCommentsByPostId(id);
             var post = _postRepository.GetPublishedPostById(id);
             if (post == null)
             {
@@ -73,6 +76,7 @@ namespace TabloidMVC.Controllers
         public IActionResult Edit(int id)
         {
             Post post = _postRepository.GetPublishedPostById(id);
+          
 
             return View(post);
         }
