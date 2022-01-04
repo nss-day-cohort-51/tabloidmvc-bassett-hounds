@@ -24,7 +24,8 @@ namespace TabloidMVC.Controllers
         // GET: TagController
         public ActionResult Index()
         {
-            return View();
+            var tags = _tagRepository.GetAllTags();
+            return View(tags);
         }
 
         // GET: TagController/Details/5

@@ -17,7 +17,7 @@ namespace TabloidMVC.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Select id, name From Tag";
+                    cmd.CommandText = @"Select id, name From Tag Order By Name ASC";
                     var reader = cmd.ExecuteReader();
 
                     var tags = new List<Tag>();
@@ -33,7 +33,7 @@ namespace TabloidMVC.Repositories
 
                     reader.Close();
 
-                    return tags
+                    return tags;
                 }
             }
         }
