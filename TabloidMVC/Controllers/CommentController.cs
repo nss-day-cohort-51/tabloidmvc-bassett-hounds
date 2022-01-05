@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using System.Security.Claims;
+using Microsoft.VisualBasic;
 
 namespace TabloidMVC.Controllers
 {
@@ -45,6 +46,7 @@ namespace TabloidMVC.Controllers
         {
             try
             {
+                comment.CreateDateTime = DateAndTime.Now;
                 comment.PostId = id;
                 comment.UserProfileId = GetCurrentUserProfileId();
                 _commentRepository.AddComment(comment);
