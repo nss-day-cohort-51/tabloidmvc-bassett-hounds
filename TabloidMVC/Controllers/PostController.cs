@@ -123,7 +123,7 @@ namespace TabloidMVC.Controllers
         {
             var currentUserId = GetCurrentUserProfileId();
             var myPosts = _postRepository.GetCurrentUsersPostsById(currentUserId);
-            return View();
+            return View(myPosts);
         }
 
         private int GetCurrentUserProfileId()
