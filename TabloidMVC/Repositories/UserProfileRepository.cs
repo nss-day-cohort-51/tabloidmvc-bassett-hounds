@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -9,6 +11,86 @@ namespace TabloidMVC.Repositories
     {
         public UserProfileRepository(IConfiguration config) : base(config) { }
 
+        public UserProfile GetProfileById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                SELECT u.Id, u.FirstName, u.LastName, u.DisplayName, u.Email, u.CreateDateTime, u.ImageLocation, u.UserTypeId, ut.[Name] as UserTypeName
+                                FROM userprofile u
+                                LEFT JOIN usertype ut on u.usertypeid = ut.id
+                                WHERE u.id=@id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    UserProfile userProfile = null;
+                    if (reader.Read())
+                    {
+                        userProfile = new UserProfile()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            Email = reader.GetString(reader.GetOrdinal("Email")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            UserType = new UserType()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                                Name = reader.GetString(reader.GetOrdinal("UserTypeName"))
+                            },
+                        };
+
+                        if (reader.IsDBNull(reader.GetOrdinal("ImageLocation")) == false)
+                        {
+                            userProfile.ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation"));
+                        }
+                    }
+                    reader.Close();
+                    return userProfile;
+                }
+            }
+        }
+        public List<UserProfile> GetAllUserProfiles()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                    SELECT up.displayname, up.firstname, up.lastname, up.id, ut.name 
+                                    FROM userprofile up 
+                                    LEFT JOIN usertype ut on up.usertypeid = ut.id 
+                                    ORDER BY up.displayname";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<UserProfile> userProfiles = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        userProfiles.Add(new UserProfile()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("displayname")),
+                            FirstName = reader.GetString(reader.GetOrdinal("firstname")),
+                            LastName = reader.GetString(reader.GetOrdinal("lastname")),
+                            UserType = new UserType()
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("name"))
+                            }
+                        });
+
+                    }
+                    reader.Close();
+                    return userProfiles;
+                }
+            }
+        }
         public UserProfile Add(UserProfile user)
 
 

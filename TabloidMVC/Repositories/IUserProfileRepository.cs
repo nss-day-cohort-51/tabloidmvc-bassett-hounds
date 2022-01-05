@@ -1,4 +1,5 @@
-﻿using TabloidMVC.Models;
+﻿using System.Collections.Generic;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Repositories
 {
@@ -6,5 +7,7 @@ namespace TabloidMVC.Repositories
     {
         UserProfile GetByEmail(string email);
         public UserProfile Add(UserProfile user);
+        public UserProfile GetProfileById(int id);
+        List<UserProfile> GetAllUserProfiles();
     }
 }
