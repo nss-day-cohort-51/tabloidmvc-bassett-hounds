@@ -36,6 +36,8 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Create
         public ActionResult Create(int id)
         {
+          
+            ViewData["PostId"] = id;
             return View();
         }
 
@@ -61,21 +63,25 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Comment comment = _commentRepository.GetCommentById(id);           
+            return View(comment);
         }
 
         // POST: CommentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Comment comment)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                
+                comment.UserProfileId = GetCurrentUserProfileId();
+                _commentRepository.UpdateComment(comment);
+                return RedirectToAction("Index", new { id = comment.PostId });
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return View(comment);
             }
         }
 
