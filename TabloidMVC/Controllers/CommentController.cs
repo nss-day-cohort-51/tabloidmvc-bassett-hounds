@@ -63,7 +63,7 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Edit/5
         public ActionResult Edit(int id)
         {
-            Comment comment = _commentRepository.GetCommentById(id);
+            Comment comment = _commentRepository.GetCommentById(id);           
             return View(comment);
         }
 
@@ -77,7 +77,7 @@ namespace TabloidMVC.Controllers
                 
                 comment.UserProfileId = GetCurrentUserProfileId();
                 _commentRepository.UpdateComment(comment);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id = comment.PostId });
             }
             catch(Exception ex)
             {

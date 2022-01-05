@@ -85,7 +85,7 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"UPDATE Comment
                                         SET
                                             Subject = @subject,
-                                            Content = @content
+                                            Content = @content                                            
                                         WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@subject", comment.Subject);
