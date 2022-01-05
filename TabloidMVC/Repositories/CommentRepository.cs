@@ -11,7 +11,6 @@ namespace TabloidMVC.Repositories
     public class CommentRepository : BaseRepository, ICommentRepository
     {
         public CommentRepository(IConfiguration config) : base(config) { }
-
         public List<Comment> GetCommentsByPostId(int postId)
         {
             using (var conn = Connection)
@@ -49,7 +48,6 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
         public void AddComment(Comment comment)
         {
             using (var conn = Connection)
@@ -77,7 +75,28 @@ namespace TabloidMVC.Repositories
 
             }
         }
-            public Comment GetCommentById(int id)
+        public void UpdateComment(Comment comment)
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Comment
+                                        SET
+                                            Subject = @subject,
+                                            Content = @content
+                                        WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@content", comment.Content);
+                    cmd.Parameters.AddWithValue("@id", comment.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public Comment GetCommentById(int id)
             {
                 using (SqlConnection conn = Connection)
                 {
@@ -118,8 +137,7 @@ namespace TabloidMVC.Repositories
                     }
                 }
             }
-
-            public void DeleteComment(int commentId)
+        public void DeleteComment(int commentId)
             {
                 using (SqlConnection conn = Connection)
                 {
@@ -138,5 +156,5 @@ namespace TabloidMVC.Repositories
                     }
                 }
             }
-        }
     }
+}
