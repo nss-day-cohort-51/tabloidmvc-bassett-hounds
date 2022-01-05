@@ -23,8 +23,12 @@
                     <i class="fas fa-trash"></i>
                 </a>
                 <p>
-                    <a class="btn btn-primary"  asp-route-id="@Model.Id" asp-controller="Comment" asp-action="Index">View Comments</a>
+                    <a class="btn btn-primary" asp-route-id="@Model.Id" asp-controller="Comment" asp-action="Index">View Comments</a>
                 </p>
+                <p>
+                    <a class="btn btn-primary" asp-route-id="@Model.Id" asp-controller="Comment" asp-action="Create">Add Comment</a>
+                </p>
+              
             </div>
         </section>
         <hr />
