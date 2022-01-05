@@ -36,6 +36,8 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Create
         public ActionResult Create(int id)
         {
+          
+            ViewData["PostId"] = id;
             return View();
         }
 
@@ -72,11 +74,10 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                comment.CreateDateTime = DateAndTime.Now;
-                comment.PostId = id;
+                
                 comment.UserProfileId = GetCurrentUserProfileId();
                 _commentRepository.UpdateComment(comment);
-                return RedirectToAction("Index", new { id = comment.PostId });
+                return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
