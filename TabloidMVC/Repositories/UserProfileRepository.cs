@@ -195,8 +195,19 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = "Update UserProfile set IsActive = 0 WHERE id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
-                    //bool deactivate = false;
-                    //userProfile.isActive = deactivate
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void ReactivateUserProfile(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "Update UserProfile set IsActive = 1 WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
