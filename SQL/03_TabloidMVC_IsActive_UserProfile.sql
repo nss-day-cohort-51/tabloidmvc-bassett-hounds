@@ -1,0 +1,1 @@
+﻿ALTER TABLE [UserProfile] ADD IsActive bit not null default 1;
