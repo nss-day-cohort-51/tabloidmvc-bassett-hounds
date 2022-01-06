@@ -114,5 +114,26 @@ namespace TabloidMVC.Controllers
                 return View(userProfile);
             }
         }
+
+        public ActionResult Reactivate(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetProfileById(id);
+            return View(userProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reactivate(int id, UserProfile userProfile)
+        {
+            try
+            {
+                _userProfileRepository.ReactivateUserProfile(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(userProfile);
+            }
+        }
     }
 }
