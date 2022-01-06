@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -90,6 +91,27 @@ namespace TabloidMVC.Controllers
             catch
             {
                 return View();
+            }
+        }
+
+        public ActionResult Deactivate(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetProfileById(id);
+            return View(userProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Deactivate(int id, UserProfile userProfile)
+        {
+            try
+            {
+                _userProfileRepository.DeactivateUserProfile(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(userProfile);
             }
         }
     }
